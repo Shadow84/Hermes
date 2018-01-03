@@ -1,0 +1,9 @@
+dependencies {
+    compile project(':germes-model')
+    compile project(':germes-persistence')    
+    testCompile 'org.powermock:powermock-module-junit4:' + powerMockVersion
+    testCompile 'org.powermock:powermock-api-mockito:' + powerMockVersion
+    testCompile 'org.jmockit:jmockit:1.30'
+
+    testRuntime 'com.h2database:h2:' + h2Version
+}

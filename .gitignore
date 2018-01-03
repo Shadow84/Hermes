@@ -1,0 +1,12 @@
+.settings
+.gradle
+.springBeans
+bin
+gradle
+target/
+build/
+.classpath
+.project
+*.log
+bower_components/
+node_modules/
