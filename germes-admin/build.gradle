@@ -1,26 +1,48 @@
 apply plugin: 'war'
 apply plugin: 'org.akhikhl.gretty'
 
+repositories {
+   flatDir {
+       dirs 'libs'
+   }
+}
+
 dependencies {
     compile project(':germes-service')    
-    compile 'org.primefaces:primefaces:6.0'
-    compile 'org.glassfish:javax.faces:2.2.14'
+    compile 'org.primefaces:primefaces:6.1'
+    compile 'org.glassfish:javax.faces:2.3.3'
     providedCompile'javax.servlet:javax.servlet-api:3.1.0'
     
-	compile 'org.jboss.weld.servlet:weld-servlet:' + weldVersion
-	runtime 'javax.enterprise:cdi-api:1.2'
-    runtime 'com.h2database:h2:' + h2Version
-    compile 'org.jboss.weld.servlet:weld-servlet:' + weldVersion    
+	compile 'org.jboss.weld.servlet:weld-servlet-core:' + weldVersion
+	runtime 'javax.enterprise:cdi-api:2.0'
+    runtime 'mysql:mysql-connector-java:6.0.6'
+    
     compile 'org.primefaces.themes:bootstrap:1.0.10'
-    compile 'org.projectlombok:lombok:1.16.14'
+    //compile 'org.projectlombok:lombok:1.16.18'
+    compile name: 'lombok-edge'
     compile("org.apache.shiro:shiro-core:${apacheShiroVersion}")
     compile("org.apache.shiro:shiro-web:${apacheShiroVersion}")
     runtime 'commons-logging:commons-logging:1.2'
     
-    testCompile('org.jglue.cdi-unit:cdi-unit:3.1.4') { exclude group:'org.jboss.weld.se' }
-    testCompile 'org.jboss.weld.se:weld-se-core:' + weldVersion    
+    runtime 'org.javassist:javassist:3.22.0-GA'
+    
+    testCompile('org.jglue.cdi-unit:cdi-unit:4.0.1') 
     testCompile 'org.mockito:mockito-core:2.7.19'
     testRuntime 'org.powermock:powermock-api-mockito2:1.7.0RC4'
+}
+
+compileJava {
+    options.compilerArgs += ["--add-modules=java.xml.ws.annotation"]
+}
+
+def isWildflyDependency(File file) {
+    return ["jboss", "weld", "cdi", "javax.faces", "validation-api", "javax.el"].findIndexOf { file.getName().contains(it) } >= 0
+}
+
+war {
+    classpath = classpath.filter { !project.hasProperty('wildfly') || !isWildflyDependency(it) }
+    
+	archiveName 'admin.war'
 }
 
 repositories {
@@ -40,5 +62,5 @@ processResources {
          dest  : project.file('src/main/resources/ui') 
       )
    }
-    exclude('txt')
+    exclude('txt', 'docker', 'admin.xml')
 }

@@ -10,3 +10,4 @@ build/
 *.log
 bower_components/
 node_modules/
+jmh-result.text

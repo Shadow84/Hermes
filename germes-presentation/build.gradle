@@ -15,13 +15,20 @@ gretty {
 	servletContainer = 'tomcat8'
 }
 
+war {
+	archiveName 'client.war'
+        exclude('test', '**/*bower.json', '**/package.json', '**/*.md', '**/*.gzip', '**/*.map', '*.js')
+	
+	classpath = classpath.filter { !project.hasProperty('glassfish') || !it.name.contains('jersey') }
+}
+
 karma {
     basePath = '../src/main/webapp' 
     colors = true 
     logLevel = 'INFO'
     profile 'default' 
     
-    browsers = ['Chrome'] 
+    browsers = ['PhantomJS'] 
     frameworks = ['jasmine'] 
     reporters = ['progress']
     profile('default')  {
@@ -36,3 +43,4 @@ karma {
         testFiles = ['*.js'] 
     }    
 }
+
